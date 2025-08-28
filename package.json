@@ -1,7 +1,7 @@
 {
   "publisher": "lokalise",
   "name": "i18n-ally",
-  "version": "2.13.1",
+  "version": "2.13.2",
   "displayName": "i18n Ally",
   "description": "🌍 All in one i18n extension for VS Code",
   "keywords": [
@@ -839,6 +839,10 @@
             ]
           },
           "description": "%config.enabled_frameworks%"
+        },
+        "i18n-ally.customFrameworkPath": {
+          "type": "string",
+          "default": ".vscode/i18n-ally-custom-framework.yml"
         },
         "i18n-ally.enabledParsers": {
           "type": "array",

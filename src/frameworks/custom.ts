@@ -3,10 +3,9 @@ import fs from 'fs'
 import { workspace, FileSystemWatcher, TextDocument } from 'vscode'
 import YAML from 'js-yaml'
 import { Framework, ScopeRange } from './base'
-import { Global } from '~/core'
+import { Config, Global } from '~/core'
 import { LanguageId, File, Log } from '~/utils'
 
-const CustomFrameworkConfigFilename = './.vscode/i18n-ally-custom-framework.yml'
 
 interface CustomFrameworkConfig {
   languageIds?: LanguageId[] | LanguageId
@@ -34,8 +33,7 @@ class CustomFramework extends Framework {
 
   load(root: string) {
     this.startWatch(root)
-    const filename = path.resolve(root, CustomFrameworkConfigFilename)
-
+    const filename = path.resolve(root, Config.parsersCustomFrameworkPath)
     if (!fs.existsSync(filename)) {
       this.data = undefined
       return false
@@ -75,7 +73,7 @@ class CustomFramework extends Framework {
     return this.data?.monopoly || false
   }
 
-  set monopoly(_) {}
+  set monopoly(_) { }
 
   refactorTemplates(keypath: string) {
     return (this.data?.refactorTemplates || ['$1'])
@@ -122,7 +120,8 @@ class CustomFramework extends Framework {
     }
     this.watchingFor = root
     if (root) {
-      const filename = path.resolve(root, CustomFrameworkConfigFilename)
+      const filename = path.resolve(root, Config.parsersCustomFrameworkPath)
+      Log.info('\n🍱 Custom framework setting file. ' + filename)
 
       this.watcher = workspace.createFileSystemWatcher(filename)
 

@@ -180,7 +180,7 @@ export class Config {
     return this.getConfig<SortCompare>('sortCompare') || 'binary'
   }
 
-  static get sortLocale(): string | undefined{
+  static get sortLocale(): string | undefined {
     return this.getConfig<string>('sortLocale')
   }
 
@@ -242,6 +242,10 @@ export class Config {
       return config
 
     return `node "${path.resolve(this.extensionPath!, config)}"`
+  }
+
+  static get parsersCustomFrameworkPath(): string {
+    return this.getConfig<string>('customFrameworkPath') || `.vscode/i18n-ally-custom-framework.yml`
   }
 
   static get parsersTypescriptCompilerOption(): any {
@@ -373,8 +377,8 @@ export class Config {
 
   static get usageDerivedKeyRules() {
     return this.getConfig<string[]>('usage.derivedKeyRules')
-    ?? this.getConfig<string[]>('derivedKeyRules') // back compatible, deprecated.
-    ?? undefined
+      ?? this.getConfig<string[]>('derivedKeyRules') // back compatible, deprecated.
+      ?? undefined
   }
 
   static get usageScanningIgnore() {
