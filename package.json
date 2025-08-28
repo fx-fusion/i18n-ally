@@ -38,7 +38,8 @@
     "test:e2e:dev": "rimraf test/e2e-out && tsc -p test/e2e --watch",
     "test:fixture": "rimraf test/fixture-scripts-out && tsc -p test/fixture-scripts && cross-env I18N_ALLY_ENV=test node ./test/fixture-scripts-out/index.js",
     "test:unit": "cross-env I18N_ALLY_ENV=test ts-mocha -p test/unit/tsconfig.json --file test/unit/setup.ts test/unit/**/*.test.ts test/unit/**/**/*.test.ts",
-    "test:update": "cross-env CHAI_JEST_SNAPSHOT_UPDATE_ALL=true nr test:unit"
+    "test:update": "cross-env CHAI_JEST_SNAPSHOT_UPDATE_ALL=true nr test:unit",
+    "vsce": "vsce package"
   },
   "dependencies": {
     "@amplitude/analytics-node": "^1.3.3",
