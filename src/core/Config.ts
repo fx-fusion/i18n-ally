@@ -355,6 +355,10 @@ export class Config {
     return this.getConfig<string[]>('translate.engines') || ['google']
   }
 
+  static get translateAlias() {
+    return this.getConfig<Record<string, string>>('translate.alias') || {}
+  }
+
   static get refactorTemplates() {
     return resolveRefactorTemplate(this.getConfig<string[]>('refactor.templates') || [])
   }

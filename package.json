@@ -1040,6 +1040,11 @@
           "default": false,
           "description": "%config.translate.fallbackToKey%"
         },
+        "i18n-ally.translate.alias": {
+          "type": "object",
+          "default": {},
+          "description": "%config.translate.alias%"
+        },
         "i18n-ally.translate.engines": {
           "type": "array",
           "items": {

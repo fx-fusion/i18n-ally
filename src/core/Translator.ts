@@ -26,10 +26,10 @@ export interface TranslateJob {
 export type AccaptableTranslateItem =
   | LocaleNode
   | LocaleRecord
-  | {locale: string; keypath: string; type: undefined }
+  | { locale: string; keypath: string; type: undefined }
 
 export class Translator {
-  private static translatingKeys: {keypath: string; locale: string}[] = []
+  private static translatingKeys: { keypath: string; locale: string }[] = []
   private static _onDidChange = new EventEmitter<TranslatorChangeEvent>()
   static readonly onDidChange = Translator._onDidChange.event
   private static _translator = new TranslateEngine()
@@ -48,7 +48,7 @@ export class Translator {
       this._onDidChange.fire({ keypath, locale, action: 'end' })
   }
 
-  static isTranslating(node: LocaleNode| LocaleRecord | LocaleTree) {
+  static isTranslating(node: LocaleNode | LocaleRecord | LocaleTree) {
     if (node.type === 'record')
       return !!this.translatingKeys.find(i => i.keypath === node.keypath && i.locale === node.locale)
     if (node.type === 'node')
@@ -111,84 +111,83 @@ export class Translator {
       title: i18n.t('prompt.translate_in_progress'),
       cancellable: true,
     },
-    async(progress, token) => {
-      jobs.forEach(job => job.token = token)
+      async (progress, token) => {
+        jobs.forEach(job => job.token = token)
 
-      const successJobs: TranslateJob[] = []
-      const failedJobs: [TranslateJob, Error][] = []
-      const cancelledJobs: TranslateJob[] = []
-      let finished = 0
-      const total = jobs.length
+        const successJobs: TranslateJob[] = []
+        const failedJobs: [TranslateJob, Error][] = []
+        const cancelledJobs: TranslateJob[] = []
+        let finished = 0
+        const total = jobs.length
 
-      const increment = 1 / total * 100
+        const increment = 1 / total * 100
 
-      const doJob = async(job: TranslateJob) => {
-        let result: PendingWrite | undefined
-        const message = `"${job.keypath}" (${job.source}->${job.locale}) ${finished + 1}/${total}`
-        progress.report({ increment: 0, message })
-        try {
-          result = await this.translateJob(job)
-          if (result)
-            successJobs.push(job)
-          else
-            cancelledJobs.push(job)
+        const doJob = async (job: TranslateJob) => {
+          let result: PendingWrite | undefined
+          const message = `"${job.keypath}" (${job.source}->${job.locale}) ${finished + 1}/${total}`
+          progress.report({ increment: 0, message })
+          try {
+            result = await this.translateJob(job)
+            if (result)
+              successJobs.push(job)
+            else
+              cancelledJobs.push(job)
+          }
+          catch (err) {
+            // eslint-disable-next-line no-console
+            console.error(err)
+            failedJobs.push([job, err])
+          }
+          finished += 1
+          progress.report({ increment, message })
+          return { result, job }
         }
-        catch (err) {
-          // eslint-disable-next-line no-console
-          console.error(err)
-          failedJobs.push([job, err])
-        }
-        finished += 1
-        progress.report({ increment, message })
-        return { result, job }
-      }
 
-      // do translating in batch
-      const parallels = Config.translateParallels
-      const slices = Math.ceil(jobs.length / parallels)
-      for (let i = 0; i < slices; i++) {
-        const results = await Promise.all(
-          jobs
-            .slice(i * parallels, (i + 1) * parallels)
-            .map(job => doJob(job)),
-        )
-        this.saveTranslations(loader, results)
-      }
-
-      // translating done
-      if (successJobs.length === 1) {
-        (async() => {
-          const job = successJobs[0]
-
-          const editButton = i18n.t('prompt.translate_edit_translated')
-          const result = await window.showInformationMessage(
-            i18n.t('prompt.translate_done_single', job.keypath),
-            editButton,
+        // do translating in batch
+        const parallels = Config.translateParallels
+        const slices = Math.ceil(jobs.length / parallels)
+        for (let i = 0; i < slices; i++) {
+          const results = await Promise.all(
+            jobs
+              .slice(i * parallels, (i + 1) * parallels)
+              .map(job => doJob(job)),
           )
-          if (result === editButton)
-            commands.executeCommand(Commands.edit_key, { keypath: job.keypath, locale: job.locale })
-        })()
-      }
-      else if (successJobs.length > 0) {
-        window.showInformationMessage(i18n.t('prompt.translate_done_multiple', successJobs.length))
-      }
+          this.saveTranslations(loader, results)
+        }
+        // translating done
+        if (successJobs.length === 1) {
+          (async () => {
+            const job = successJobs[0]
 
-      if (failedJobs.length) {
-        for (const [job, error] of failedJobs) {
-          Log.info(`🌎⚠️ Failed to translate "${job.keypath}" (${job.source}->${job.locale})`)
-          Log.error(error, false)
+            const editButton = i18n.t('prompt.translate_edit_translated')
+            const result = await window.showInformationMessage(
+              i18n.t('prompt.translate_done_single', job.keypath),
+              editButton,
+            )
+            if (result === editButton)
+              commands.executeCommand(Commands.edit_key, { keypath: job.keypath, locale: job.locale })
+          })()
+        }
+        else if (successJobs.length > 0) {
+          window.showInformationMessage(i18n.t('prompt.translate_done_multiple', successJobs.length))
         }
 
-        const message = failedJobs.length === 1
-          ? i18n.t('prompt.translate_failed_single', failedJobs[0][0].keypath, failedJobs[0][0].locale)
-          : i18n.t('prompt.translate_failed_multiple', failedJobs.length)
+        if (failedJobs.length) {
+          for (const [job, error] of failedJobs) {
+            Log.info(`🌎⚠️ Failed to translate "${job.keypath}" (${job.source}->${job.locale})`)
+            Log.error(error, false)
+          }
 
-        Log.error(message)
-      }
+          const message = failedJobs.length === 1
+            ? i18n.t('prompt.translate_failed_single', failedJobs[0][0].keypath, failedJobs[0][0].locale)
+            : i18n.t('prompt.translate_failed_multiple', failedJobs.length)
 
-      if (cancelledJobs.length)
-        window.showInformationMessage(i18n.t('prompt.translate_cancelled_multiple', cancelledJobs.length))
-    })
+          Log.error(message)
+        }
+
+        if (cancelledJobs.length)
+          window.showInformationMessage(i18n.t('prompt.translate_cancelled_multiple', cancelledJobs.length))
+      })
   }
 
   static getTranslateJobs(
@@ -247,6 +246,8 @@ export class Translator {
     const { loader, locale, keypath, filepath, token, source } = job
     if (token?.isCancellationRequested)
       return
+    const _source = Config.translateAlias[source] || source
+    const _locale = Config.translateAlias[locale] || locale
 
     if (locale === source)
       throw new AllyError(ErrorType.translating_same_locale)
@@ -254,7 +255,7 @@ export class Translator {
     const value = this.getValueOfKey(loader, keypath, source)
 
     try {
-      Log.info(`🌍 Translating "${keypath}" (${source}->${locale})`)
+      Log.info(`🌍 Translating "${keypath}" (${_source}->${_locale})`)
       this.start(keypath, locale)
       const result = await this.translateText(value, source, locale)
       this.end(keypath, locale)
@@ -279,10 +280,10 @@ export class Translator {
 
   private static async saveTranslations(
     loader: Loader,
-    results: ({result: PendingWrite | undefined; job: TranslateJob})[],
+    results: ({ result: PendingWrite | undefined; job: TranslateJob })[],
   ) {
     const now = new Date().toISOString()
-    const r = results.filter(i => i.result) as ({result: PendingWrite; job: TranslateJob})[]
+    const r = results.filter(i => i.result) as ({ result: PendingWrite; job: TranslateJob })[]
 
     if (Config.translateSaveAsCandidates) {
       await Global.reviews.setTranslationCandidates(r.map(i => ({
