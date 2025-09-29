@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TextDocument } from 'vscode'
-import { KeyStyle, ParserOptions, KeyInDocument, Config } from '~/core'
+import { KeyStyle, ParserOptions, KeyInDocument, Config, PendingWrite } from '~/core'
 import { File } from '~/utils'
 
 export abstract class Parser {
@@ -36,14 +36,14 @@ export abstract class Parser {
     return await this.parse(raw)
   }
 
-  async save(filepath: string, object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined) {
-    const text = await this.dump(object, sort, compare)
+  async save(filepath: string, object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined, pendings: PendingWrite[] = []) {
+    const text = await this.dump(object, sort, compare, pendings)
     await File.write(filepath, text)
   }
 
   abstract parse(text: string): Promise<object>
 
-  abstract dump(object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined): Promise<string>
+  abstract dump(object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined, pendings: PendingWrite[]): Promise<string>
 
   parseAST(text: string): KeyInDocument[] {
     return []

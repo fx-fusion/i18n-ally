@@ -1,4 +1,5 @@
 import { Json5Parser } from './json5'
+import { JsoncParser } from './jsonc'
 import { JsonParser } from './json'
 import { YamlParser } from './yaml'
 import { EcmascriptParser } from './ecmascript'
@@ -16,6 +17,7 @@ export const AvailableParsers: Parser[] = [
   new JsonParser(),
   new YamlParser(),
   new Json5Parser(),
+  new JsoncParser(),
 
   // available parsers
   new EcmascriptParser('js'),

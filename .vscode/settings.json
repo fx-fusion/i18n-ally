@@ -63,4 +63,8 @@
     "html"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  // # npm install -g @vscode/vsce
 }

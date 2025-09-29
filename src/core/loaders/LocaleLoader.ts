@@ -18,7 +18,7 @@ const THROTTLE_DELAY = 1500
 
 export class LocaleLoader extends Loader {
   private _files: Record<string, ParsedFile> = {}
-  private _path_matchers: {regex: RegExp; matcher: string}[] = []
+  private _path_matchers: { regex: RegExp; matcher: string }[] = []
   private _dir_structure: DirStructure = 'file'
   private _locale_dirs: string[] = []
 
@@ -75,7 +75,7 @@ export class LocaleLoader extends Loader {
   }
 
   // #region throttled functions
-  private throttledFullReload = throttle(async() => {
+  private throttledFullReload = throttle(async () => {
     Log.info('🔄 Perfroming a full reload', 2)
     await this.loadAll(false)
     this.update()
@@ -87,7 +87,7 @@ export class LocaleLoader extends Loader {
 
   private throttledLoadFileWaitingList: [string, string][] = []
 
-  private throttledLoadFileExecutor = throttle(async() => {
+  private throttledLoadFileExecutor = throttle(async () => {
     const list = this.throttledLoadFileWaitingList
     this.throttledLoadFileWaitingList = []
     if (list.length) {
@@ -259,7 +259,7 @@ export class LocaleLoader extends Loader {
     return findBestMatch(fromPath, paths).bestMatch.target
   }
 
-  async write(pendings: PendingWrite|PendingWrite[]) {
+  async write(pendings: PendingWrite | PendingWrite[]) {
     if (!Array.isArray(pendings))
       pendings = [pendings]
 
@@ -304,8 +304,10 @@ export class LocaleLoader extends Loader {
         }
 
         let modified = original
+        let _pendings = [];
         for (const pending of pendings) {
           let keypath = pending.keypath
+          const _pending = { ...pending }
 
           if (Global.namespaceEnabled) {
             const node = this.getNodeByKey(keypath)
@@ -318,6 +320,7 @@ export class LocaleLoader extends Loader {
             pending.value,
             await Global.requestKeyStyle(),
           )
+          _pendings.push(_pending)
         }
 
         const locale = pendings[0].locale
@@ -328,7 +331,7 @@ export class LocaleLoader extends Loader {
         const compare = Config.sortCompare === 'locale'
           ? getLocaleCompare(Config.sortLocale, locale)
           : undefined
-        await parser.save(filepath, processed, Config.sortKeys, compare)
+        await parser.save(filepath, processed, Config.sortKeys, compare, _pendings)
 
         if (this._files[filepath]) {
           this._files[filepath].value = modified
