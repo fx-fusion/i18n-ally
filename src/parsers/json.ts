@@ -4,6 +4,8 @@ import SortedStringify from 'json-stable-stringify'
 // @ts-ignore
 import JsonMap from 'json-source-map'
 import { Parser } from './base'
+import { KeyStyle, PendingWrite } from '~/core'
+import { File } from '~/utils'
 
 export class JsonParser extends Parser {
   id = 'json'
@@ -22,6 +24,20 @@ export class JsonParser extends Parser {
     }
   }
 
+  async save(filepath: string, object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined, pendings: PendingWrite[] = []) {
+    let text = File.readSync(filepath);
+    const updates: { path: (string | number)[]; value: any }[] = [];
+    for (const pending of pendings) {
+      const { keypath, value } = pending
+      updates.push({
+        path: keypath.split('.'),
+        value: value
+      })
+      text = JSONC.applyEdits(text, JSONC.modify(text, keypath.split('.'), value, {}))
+    }
+    await File.write(filepath, text)
+  }
+
   async dump(object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined) {
     const indent = this.options.tab === '\t' ? this.options.tab : this.options.indent
 
@@ -33,6 +49,30 @@ export class JsonParser extends Parser {
 
   annotationSupported = true
   annotationLanguageIds = ['json']
+
+  navigateToKey(text: string, keypath: string, keystyle: KeyStyle) {
+    const keys = keystyle === 'flat'
+      ? [keypath]
+      : keypath.split('.')
+
+    // build regex to search key
+    let regexString = keys
+      .map((key, i) => `^[ \\t]{${(i + 1) * this.options.indent}}"?${key}"?: ?`)
+      .join('[\\s\\S]*')
+    regexString += '(?:"?(.*)"?|({))'
+    const regex = new RegExp(regexString, 'gm')
+
+    const match = regex.exec(text)
+    if (match && match.length >= 2) {
+      const end = match.index + match[0].length - 1
+      const value = match[1] || match[2]
+      const start = end - value.length
+      return { start, end, key: keypath, quoted: true }
+    }
+    else {
+      return undefined
+    }
+  }
 
   parseAST(text: string) {
     if (!text || !text.trim())
