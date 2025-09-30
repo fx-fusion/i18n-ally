@@ -1,3 +1,5 @@
+import type * as JSONCType from 'jsonc-parser'
+const JSONC: typeof JSONCType = require('jsonc-parser')
 import SortedStringify from 'json-stable-stringify'
 // @ts-ignore
 import JsonMap from 'json-source-map'
@@ -13,7 +15,11 @@ export class JsonParser extends Parser {
   async parse(text: string) {
     if (!text || !text.trim())
       return {}
-    return JSON.parse(text)
+    try {
+      return JSONC.parse(text)
+    } catch (e) {
+      return JSON.parse(text)
+    }
   }
 
   async dump(object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined) {
