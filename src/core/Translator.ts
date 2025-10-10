@@ -257,7 +257,7 @@ export class Translator {
     try {
       Log.info(`🌍 Translating "${keypath}" (${_source}->${_locale})`)
       this.start(keypath, locale)
-      const result = await this.translateText(value, source, locale)
+      const result = await this.translateText(value, _source, _locale)
       this.end(keypath, locale)
 
       if (token?.isCancellationRequested)
