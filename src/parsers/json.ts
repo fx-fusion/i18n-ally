@@ -33,7 +33,13 @@ export class JsonParser extends Parser {
         path: keypath.split('.'),
         value: value
       })
-      text = JSONC.applyEdits(text, JSONC.modify(text, keypath.split('.'), value, {}))
+      text = JSONC.applyEdits(text, JSONC.modify(text, keypath.split('.'), value, {
+        formattingOptions: {
+          tabSize: 2,
+          insertSpaces: true,
+          eol: '\n'
+        }
+      }))
     }
     await File.write(filepath, text)
   }

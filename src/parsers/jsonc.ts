@@ -1,8 +1,8 @@
 import type * as JSONCType from 'jsonc-parser'
 const JSONC: typeof JSONCType = require('jsonc-parser')
-import { File, getLocaleCompare, NodeHelper } from '~/utils'
+import { File } from '~/utils'
 import { Parser } from './base'
-import { Config, DataProcessContext, Global, KeyStyle, PendingWrite } from '~/core'
+import { KeyStyle, PendingWrite } from '~/core'
 
 export class JsoncParser extends Parser {
   id = 'jsonc'
@@ -22,13 +22,13 @@ export class JsoncParser extends Parser {
   }
 
   async save(filepath: string, object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined, pendings: PendingWrite[] = []) {
-    let text = File.readSync(filepath);
-    const updates: { path: (string | number)[]; value: any }[] = [];
+    let text = File.readSync(filepath)
+    const updates: { path: (string | number)[]; value: any }[] = []
     for (const pending of pendings) {
       const { keypath, value } = pending
       updates.push({
         path: keypath.split('.'),
-        value: value
+        value: value,
       })
       text = JSONC.applyEdits(text, JSONC.modify(text, keypath.split('.'), value, {}))
     }
@@ -36,7 +36,7 @@ export class JsoncParser extends Parser {
   }
 
   async dump(object: object) {
-    return JSON.stringify(object);
+    return JSON.stringify(object)
   }
 
   navigateToKey(text: string, keypath: string, keystyle: KeyStyle) {

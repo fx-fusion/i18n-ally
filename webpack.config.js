@@ -28,6 +28,9 @@ const config = {
     'esm': 'esm',
     'ts-node': 'ts-node',
     'consolidate': 'consolidate',
+    // Avoid bundling jsonc-parser to prevent Webpack 4 from parsing modern syntax (e.g. ??)
+    // and let Node resolve it at runtime.
+    'jsonc-parser': 'commonjs jsonc-parser',
     'less': '_',
     'sass': '_',
     'stylus': '_',
@@ -36,6 +39,9 @@ const config = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    // Prefer CommonJS build (main) to avoid modern ESM syntax like nullish coalescing (??)
+    // that Webpack 4 parser may not handle in node_modules packages such as jsonc-parser.
+    mainFields: ['main'],
     plugins: [
       new TsconfigPathsPlugin(),
     ],
@@ -67,6 +73,7 @@ const config = {
       return {
         name: 'replace',
         enforce: 'pre',
+        /** @param {string} code */
         transform(code) {
           return code.replace(/process\.env\.NODE_ENV/g, JSON.stringify(process.env.I18N_ALLY_ENV))
         },
