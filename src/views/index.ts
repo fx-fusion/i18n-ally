@@ -42,6 +42,10 @@ const m: ExtensionModule = (ctx) => {
     treeDataProvider: new HelpFeedbackProvider(ctx),
   })
 
+  window.createTreeView(ViewIds.feedback, {
+    treeDataProvider: new HelpFeedbackProvider(ctx),
+  })
+
   return []
 }
 

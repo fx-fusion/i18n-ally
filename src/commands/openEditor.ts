@@ -1,5 +1,6 @@
-import { commands, window, ViewColumn, workspace, TextDocument } from 'vscode'
+import { commands, window, workspace, TextDocument } from 'vscode'
 import { EditorPanel } from '../webview/panel'
+import { openInSidebar } from '~/webview'
 import { LocaleTreeItem } from '../views'
 import { Commands } from './commands'
 import { CommandOptions } from './manipulations/common'
@@ -25,14 +26,12 @@ export default <ExtensionModule> function(ctx) {
 
     let key: string | undefined
     let locale: string | undefined
-    let mode: EditorPanel['mode'] = 'standalone'
     let index: number | undefined
 
     // from command pattele
     if (!item) {
       actionSource = ActionSource.CommandPattele
-      if (supportedFileOpen())
-        mode = 'currentFile'
+      // prefer sidebar; no need to compute 'mode'
 
       key = await promptKeys(i18n.t('prompt.choice_key_to_open'))
     }
@@ -51,10 +50,8 @@ export default <ExtensionModule> function(ctx) {
       actionSource = ActionSource.Hover
       key = item.keypath
       locale = item.locale
-      if (item.keyIndex != null) {
-        mode = 'currentFile'
+      if (item.keyIndex != null)
         index = item.keyIndex
-      }
     }
 
     if (!key)
@@ -63,9 +60,8 @@ export default <ExtensionModule> function(ctx) {
     if (actionSource !== ActionSource.None)
       Telemetry.track(TelemetryKey.EditorOpen, { source: actionSource })
 
-    const panel = EditorPanel.createOrShow(ctx, mode === 'currentFile' ? ViewColumn.Two : undefined)
-    panel.mode = mode
-    panel.openKey(key, locale, index)
+    // Prefer sidebar webview; fall back to panel if needed
+    await openInSidebar(key, locale, index)
   }
 
   function updateContext(doc?: TextDocument) {

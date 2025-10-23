@@ -168,7 +168,8 @@
     "onLanguage:php",
     "onLanguage:handlebars",
     "onLanguage:ini",
-    "onLanguage:svelte"
+    "onLanguage:svelte",
+    "onView:i18n-ally-editor-view"
   ],
   "icon": "res/logo.png",
   "homepage": "https://github.com/lokalise/i18n-ally",
@@ -680,34 +681,47 @@
         {
           "id": "i18n-ally-locales-file-explorer",
           "name": "%view.i18n_keys%",
-          "when": "i18n-ally-enabled"
+          "when": "i18n-ally-enabled",
+          "icon": "./res/logo.svg"
         }
       ],
       "i18n-ally": [
         {
+          "type": "webview",
+          "id": "i18n-ally-editor-view",
+          "name": "%editor.title%",
+          "when": "i18n-ally-enabled",
+          "icon": "./res/logo.svg"
+        },
+        {
           "id": "i18n-ally-locales-sidebar-file",
           "name": "%view.current_file%",
-          "when": "i18n-ally-enabled"
+          "when": "i18n-ally-enabled",
+          "icon": "./res/logo.svg"
         },
         {
           "id": "i18n-ally-locales-progress",
           "name": "%view.progress%",
-          "when": "i18n-ally-enabled"
+          "when": "i18n-ally-enabled",
+          "icon": "./res/logo.svg"
         },
         {
           "id": "i18n-ally-locales-tree",
           "name": "%view.tree%",
-          "when": "i18n-ally-enabled"
+          "when": "i18n-ally-enabled",
+          "icon": "./res/logo.svg"
         },
         {
           "id": "i18n-ally-locales-usage",
           "name": "%view.usage%",
-          "when": "i18n-ally-enabled"
+          "when": "i18n-ally-enabled",
+          "icon": "./res/logo.svg"
         },
         {
           "id": "i18n-ally-help-feedback",
           "name": "%view.help_feedback%",
-          "when": "i18n-ally-enabled"
+          "when": "i18n-ally-enabled",
+          "icon": "./res/logo.svg"
         }
       ]
     },

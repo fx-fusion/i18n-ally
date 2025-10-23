@@ -7,6 +7,7 @@ import viewsModules from '~/views'
 import { Log } from '~/utils'
 import i18n from '~/i18n'
 import editorModules from '~/editor'
+import webviewModules from '~/webview'
 
 export async function activate(ctx: ExtensionContext) {
   Log.info(`🈶 Activated, v${version}`)
@@ -24,6 +25,7 @@ export async function activate(ctx: ExtensionContext) {
     commandsModules,
     editorModules,
     viewsModules,
+    webviewModules,
   ]
 
   const disposables = flatten(modules.map(m => m(ctx)))

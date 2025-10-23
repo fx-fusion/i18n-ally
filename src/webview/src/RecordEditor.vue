@@ -13,17 +13,15 @@
       @input='onInput'
     )
 
-    .buttons(v-if='active')
+    .buttons
       .button(v-if='readonly' disabled)
         v-pencil-off
 
       .button(@click='translate' v-if='!readonly && !review.translation_candidate && record.locale !== $store.state.config.sourceLanguage')
         v-earth
-        span {{ $t('editor.translate') }}
 
       .button(@click='reviewing=!reviewing' v-if='$store.state.config.review')
         v-comment-edit-outline
-        span {{ $t('review.review') }}
 
     .review-brief(v-if='$store.state.config.review')
       v-earth.state-icon(v-if='!active && review.translation_candidate')
@@ -341,4 +339,40 @@ export default Vue.extend({
     margin auto 0.4em
     font-size 0.8em
     font-style italic
+</style>
+<style lang="css">
+.edit-input .buttons {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-input .buttons .button {
+  margin: 0 !important;
+  padding: 0 .6em;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+.edit-input .buttons .button::before{
+  background:#353535;
+  opacity: 1;
+}
+.edit-input .buttons .button:hover::before{
+  background:#575757;
+  opacity: 1;
+}
+.edit-input .buttons {
+  display: none;
+}
+.edit-input:hover .buttons {
+  display: flex;
+}
 </style>

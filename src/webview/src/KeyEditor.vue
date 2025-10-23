@@ -12,7 +12,7 @@
         @click='gotoKey(idx)'
         :class='{active: idx === keyIndex}'
       )
-        .key {{key.key}}
+        .key(v-html='preStr(key.key)')
         .value(:class='{empty: !key.value}') {{key.value || $t('editor.empty')}}
 
     .resize-handler
@@ -81,7 +81,7 @@ export default Vue.extend({
   data() {
     return {
       dragging: false,
-      sidebarWidth: 150,
+      sidebarWidth: 100,
       sidebar: false,
       current: '',
       keyIndex: 0,
@@ -176,8 +176,11 @@ export default Vue.extend({
     },
     onMove(e) {
       if (this.dragging)
-        this.sidebarWidth = Math.min(Math.max(100, e.clientX - 20), window.innerWidth * 0.6)
+        this.sidebarWidth = Math.min(Math.max(50, e.clientX - 20), window.innerWidth * 0.6)
     },
+    preStr(v){
+      return v.replace(/\./g,'<wbr>.<wbr>')
+    }
   },
 })
 </script>
@@ -275,4 +278,13 @@ export default Vue.extend({
       &.add
         opacity 0.5
         font-style italic
+</style>
+<style lang="css">
+.key-editor .sidebar{
+  padding: 0.4em !important;
+}
+.key-editor .sidebar .keys .item .key{
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
 </style>
