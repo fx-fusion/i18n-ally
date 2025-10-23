@@ -178,8 +178,8 @@ export default Vue.extend({
       if (this.dragging)
         this.sidebarWidth = Math.min(Math.max(50, e.clientX - 20), window.innerWidth * 0.6)
     },
-    preStr(v){
-      return v.replace(/\./g,'<wbr>.<wbr>')
+    preStr(v) {
+      return v.replace(/\./g, '<wbr>.<wbr>')
     }
   },
 })
@@ -280,10 +280,17 @@ export default Vue.extend({
         font-style italic
 </style>
 <style lang="css">
-.key-editor .sidebar{
+.key-editor {
+  height: 100vh;
+  overflow-y: hidden;
+}
+
+.key-editor .sidebar {
+  height: 100%;
   padding: 0.4em !important;
 }
-.key-editor .sidebar .keys .item .key{
+
+.key-editor .sidebar .keys .item .key {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
