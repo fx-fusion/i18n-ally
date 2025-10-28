@@ -82,11 +82,12 @@ export class Translator {
     nodes: AccaptableTranslateItem[],
     sourceLanguage: string,
     targetLocales?: string[],
+    allForce = false,
   ) {
     if (!nodes.length)
       return
 
-    const jobs = this.getTranslateJobs(loader, nodes, sourceLanguage, targetLocales)
+    const jobs = this.getTranslateJobs(loader, nodes, sourceLanguage, targetLocales, undefined, allForce)
 
     if (!jobs.length) {
       window.showInformationMessage(
@@ -196,6 +197,7 @@ export class Translator {
     sourceLanguage: string,
     targetLocales?: string[],
     token?: CancellationToken,
+    allForce = false,
   ): TranslateJob[] {
     const jobs: TranslateJob[] = []
 
@@ -203,7 +205,7 @@ export class Translator {
       if (node.readonly)
         return
 
-      if (force || Config.translateOverrideExisting || !node.value) {
+      if (force || allForce || Config.translateOverrideExisting || !node.value) {
         jobs.push({
           loader,
           locale: node.locale,

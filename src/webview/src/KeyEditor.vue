@@ -46,6 +46,11 @@
         .button(@click='translateAll' v-if='emptyRecords.length')
           v-earth
           span {{ $t('editor.translate_all_missing') }} ({{emptyRecords.length}})
+
+      .buttons.actions
+        .button(@click='translateOtherAll' v-if='otherRecords.length')
+          v-earth
+          span {{ $t('editor.translate_all') }} ({{otherRecords.length}})
         // .button Mark all as...
 
     .records
@@ -110,6 +115,14 @@ export default Vue.extend({
         && !((this.data?.reviews?.locales || {})[i.locale]?.translation_candidate),
       )
     },
+    otherRecords() {
+      return this.records.filter(i =>
+        !i.readonly
+        //&& !i.value
+        && i.locale !== this.$store.state.config.sourceLanguage
+        && !((this.data?.reviews?.locales || {})[i.locale]?.translation_candidate),
+      )
+    },
   },
 
   watch: {
@@ -161,6 +174,16 @@ export default Vue.extend({
         data: {
           keypath: this.data.keypath,
           locales: this.emptyRecords.map(i => i.locale),
+        },
+      })
+    },
+    translateOtherAll() {
+      vscode.postMessage({
+        type: 'translate',
+        data: {
+          keypath: this.data.keypath,
+          locales: this.otherRecords.map(i => i.locale),
+          force: true
         },
       })
     },

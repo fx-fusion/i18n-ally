@@ -64,5 +64,5 @@ export async function TranslateKeys(
       nodes.push(node)
   }
 
-  Translator.translateNodes(CurrentFile.loader, nodes, source, targetLocales)
+  Translator.translateNodes(CurrentFile.loader, nodes, source, targetLocales, item?.force ?? false)
 }
