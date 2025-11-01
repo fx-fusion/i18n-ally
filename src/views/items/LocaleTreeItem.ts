@@ -99,6 +99,9 @@ export class LocaleTreeItem extends BaseTreeItem {
         values.push('open-in-editor')
     }
 
+    if (values.indexOf('translatable') === -1 && !this.node?.children)
+      values.push('translatable')
+
     return values.join('-')
   }
 
