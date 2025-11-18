@@ -99,6 +99,7 @@ export class LocaleTreeItem extends BaseTreeItem {
         values.push('open-in-editor')
     }
 
+    // @ts-ignore
     if (values.indexOf('translatable') === -1 && !this.node?.children)
       values.push('translatable')
 

@@ -33,6 +33,7 @@
       .key-name
         span "{{data.keypath}}"
         v-pencil.setting-button.small(@click='renameKey')
+        v-content-copy.setting-button.small(@click='copyKey')
 
       // pre {{$store.state.context}} {{keyIndex}}
 
@@ -70,11 +71,13 @@ import Vue from 'vue'
 import Flag from './Flag.vue'
 import RecordEditor from './RecordEditor.vue'
 import { vscode } from './api'
+import VContentCopy from 'vue-material-design-icons/ContentCopy.vue'
 
 export default Vue.extend({
   components: {
     Flag,
     RecordEditor,
+    VContentCopy,
   },
 
   inheritAttrs: false,
@@ -165,6 +168,12 @@ export default Vue.extend({
     renameKey() {
       vscode.postMessage({
         type: 'rename-key',
+        keypath: this.data.keypath,
+      })
+    },
+    copyKey() {
+      vscode.postMessage({
+        type: 'copy-key',
         keypath: this.data.keypath,
       })
     },

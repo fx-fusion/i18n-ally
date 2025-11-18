@@ -64,5 +64,6 @@ export async function TranslateKeys(
       nodes.push(node)
   }
 
+  // @ts-ignore
   Translator.translateNodes(CurrentFile.loader, nodes, source, targetLocales, item?.force ?? true)
 }
