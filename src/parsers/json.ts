@@ -1,10 +1,12 @@
+import fs from 'fs-extra'
+import path from 'path'
 import type * as JSONCType from 'jsonc-parser'
 const JSONC: typeof JSONCType = require('jsonc-parser')
 import SortedStringify from 'json-stable-stringify'
 // @ts-ignore
 import JsonMap from 'json-source-map'
 import { Parser } from './base'
-import { KeyStyle, PendingWrite } from '~/core'
+import { Config, KeyStyle, PendingWrite } from '~/core'
 import { File } from '~/utils'
 
 export class JsonParser extends Parser {
@@ -25,8 +27,9 @@ export class JsonParser extends Parser {
   }
 
   async save(filepath: string, object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined, pendings: PendingWrite[] = []) {
-    let text = File.readSync(filepath);
-    const updates: { path: (string | number)[]; value: any }[] = [];
+    let text = File.readSync(filepath)
+    await this.backupFile(filepath)
+    const updates: { path: (string | number)[]; value: any }[] = []
     for (const pending of pendings) {
       const { keypath, value } = pending
       updates.push({
@@ -42,6 +45,52 @@ export class JsonParser extends Parser {
       }))
     }
     await File.write(filepath, text)
+  }
+
+  private async backupFile(filepath: string) {
+    try {
+      const root = Config.root || path.dirname(filepath)
+      const cacheRoot = path.join(root, '.vscode', 'i18n-ally-cache', 'backups')
+      const relative = path.relative(root, filepath)
+      const normalized = relative && !relative.startsWith('..') ? relative : path.basename(filepath)
+      const safeDir = normalized.replace(/[:]/g, '_').replace(/\\/g, '__').replace(/\//g, '__')
+      const backupDir = path.join(cacheRoot, safeDir)
+      await fs.ensureDir(backupDir)
+
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+      const backupPath = path.join(backupDir, `${timestamp}.bak`)
+      await fs.copy(filepath, backupPath)
+
+      await this.pruneBackups(backupDir)
+    }
+    catch (error) {
+      // Backup failures should not block the save operation.
+    }
+  }
+
+  private async pruneBackups(backupDir: string) {
+    console.log('[backupDir]', backupDir);
+    const files = await fs.readdir(backupDir)
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000
+
+    const entries = await Promise.all(files.map(async (name) => {
+      const full = path.join(backupDir, name)
+      const stat = await fs.stat(full)
+      return { name, full, mtime: stat.mtime.getTime() }
+    }))
+
+    const fresh = [] as { name: string; full: string; mtime: number }[]
+    for (const entry of entries) {
+      if (entry.mtime < cutoff)
+        await fs.remove(entry.full)
+      else
+        fresh.push(entry)
+    }
+
+    fresh.sort((a, b) => b.mtime - a.mtime)
+    const overflow = fresh.slice(10)
+    for (const entry of overflow)
+      await fs.remove(entry.full)
   }
 
   async dump(object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined) {

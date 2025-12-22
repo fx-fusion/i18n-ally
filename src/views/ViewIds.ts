@@ -6,4 +6,5 @@ export enum ViewIds {
   usage = 'i18n-ally-locales-usage',
   file = 'i18n-ally-locales-sidebar-file',
   file_in_explorer = 'i18n-ally-locales-file-explorer',
+  history = 'i18n-ally-local-history'
 }

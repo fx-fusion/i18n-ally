@@ -51,6 +51,7 @@
     "esm": "^3.2.25",
     "fast-glob": "^3.2.7",
     "fluent-vue-cli": "^3.0.4",
+    "glob": "^7.1.7",
     "glob-gitignore": "^1.0.14",
     "htmlparser2": "^6.1.0",
     "iconv-lite": "^0.6.3",
@@ -401,6 +402,89 @@
         "command": "i18n-ally.extract-enable-auto-detect",
         "category": "%extname%",
         "title": "%command.extract.enable-auto-detect%"
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.refresh",
+        "title": "Refresh",
+        "when": false,
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.more",
+        "title": "See more history",
+        "when": false,
+        "icon": "$(zoom-in)"
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.deleteAll",
+        "title": "Delete history",
+        "when": false,
+        "icon": "$(trash)"
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.forCurrentFile",
+        "title": "Current file",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.forAll",
+        "title": "All",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.forSpecificFile",
+        "title": "Specific file",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.showSideEntry",
+        "title": "Open to the side",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.deleteEntry",
+        "title": "Delete",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.compareToCurrentEntry",
+        "title": "Compare with current version",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.selectEntry",
+        "title": "Select for compare",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.compareEntry",
+        "title": "Compare with selection",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.restoreEntry",
+        "title": "Restore",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-local-history.showAll",
+        "title": "Local History: Show all"
+      },
+      {
+        "command": "i18n-ally-local-history.showCurrent",
+        "title": "Local History: Show current version"
+      },
+      {
+        "command": "i18n-ally-local-history.compareToCurrent",
+        "title": "Local History: Compare to current version"
+      },
+      {
+        "command": "i18n-ally-local-history.compareToActive",
+        "title": "Local History: Compare to active file"
+      },
+      {
+        "command": "i18n-ally-local-history.compareToPrevious",
+        "title": "Local History: Compare to previous"
       }
     ],
     "menus": {
@@ -609,6 +693,46 @@
           "command": "i18n-ally.extract-enable-auto-detect",
           "when": "viewItem =~ /i18n-ally-hard-string-root/ && i18n-ally.extract.autoDetect == false",
           "group": "i18nally@2"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.showEntry",
+          "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
+          "group": "navigation@1"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.showSideEntry",
+          "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
+          "group": "navigation@2"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.compareToCurrentEntry",
+          "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
+          "group": "compare@1"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.selectEntry",
+          "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
+          "group": "compare@2"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.compareEntry",
+          "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
+          "group": "compare@3"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.restoreEntry",
+          "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
+          "group": "navigation@3"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.deleteEntry",
+          "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
+          "group": "navigation@4"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.deleteEntry",
+          "when": "view == i18n-ally-local-history && viewItem == localHistoryGrp",
+          "group": "navigation@1"
         }
       ],
       "view/title": [
@@ -621,6 +745,36 @@
           "command": "i18n-ally.new-key",
           "group": "navigation",
           "when": "view =~ /i18n-ally-locales-tree/"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.refresh",
+          "group": "navigation@1",
+          "when": "view == i18n-ally-local-history"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.more",
+          "group": "navigation@2",
+          "when": "view == i18n-ally-local-history"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.deleteAll",
+          "group": "navigation@3",
+          "when": "view == i18n-ally-local-history"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.forCurrentFile",
+          "group": "navigation@4",
+          "when": "view == i18n-ally-local-history"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.forAll",
+          "group": "navigation@5",
+          "when": "view == i18n-ally-local-history"
+        },
+        {
+          "command": "i18n-ally-treeLocalHistory.forSpecificFile",
+          "group": "navigation@6",
+          "when": "view == i18n-ally-local-history"
         }
       ],
       "explorer/context": [
@@ -720,6 +874,12 @@
         {
           "id": "i18n-ally-help-feedback",
           "name": "%view.help_feedback%",
+          "when": "i18n-ally-enabled",
+          "icon": "./res/logo.svg"
+        },
+        {
+          "id": "i18n-ally-local-history",
+          "name": "%view.local_history%",
           "when": "i18n-ally-enabled",
           "icon": "./res/logo.svg"
         }
@@ -1359,6 +1519,62 @@
         },
         "vue-i18n-ally.readonly": {
           "deprecationMessage": "%config.deprecated%"
+        },
+        "i18n-ally.local-history.saveDelay": {
+          "type": "number",
+          "default": 0,
+          "description": "Controls the delay in seconds after which local-history is saved. To avoid too many history files."
+        },
+        "i18n-ally.local-history.daysLimit": {
+          "type": "number",
+          "default": 30,
+          "description": "A day number to purge local history. (0: no purge)"
+        },
+        "i18n-ally.local-history.maxDisplay": {
+          "type": "number",
+          "default": 10,
+          "description": "A max files to display"
+        },
+        "i18n-ally.local-history.dateLocale": {
+          "type": "string",
+          "default": "",
+          "description": "Specify locale to use when displaying date"
+        },
+        "i18n-ally.local-history.exclude": {
+          "type": "array",
+          "default": [
+            "**/.history/**",
+            "**/.vscode/**",
+            "**/node_modules/**",
+            "**/typings/**",
+            "**/out/**",
+            "**/Code/User/**"
+          ],
+          "description": "Files or folder to not save"
+        },
+        "i18n-ally.local-history.enabled": {
+          "type": "number",
+          "default": 1,
+          "description": "Is save in local history enabled (Never=0, Always=1, Limited to workspaceFolder=2)"
+        },
+        "i18n-ally.local-history.path": {
+          "type": "string",
+          "default": "",
+          "description": "Specify a location for .history folder (null: use workspaceFolder)"
+        },
+        "i18n-ally.local-history.absolute": {
+          "type": "boolean",
+          "default": false,
+          "description": "Save absolute path in local-history.path"
+        },
+        "i18n-ally.local-history.treeLocation": {
+          "type": "string",
+          "default": "explorer",
+          "enum": [
+            "explorer",
+            "localHistory"
+          ],
+          "description": "Specify a location for tree view: explorer or localHistory"
         }
       }
     }
