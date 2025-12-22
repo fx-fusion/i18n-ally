@@ -69,7 +69,6 @@ export class JsonParser extends Parser {
   }
 
   private async pruneBackups(backupDir: string) {
-    console.log('[backupDir]', backupDir);
     const files = await fs.readdir(backupDir)
     const cutoff = Date.now() - 24 * 60 * 60 * 1000
 

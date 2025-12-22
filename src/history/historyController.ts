@@ -302,7 +302,6 @@ export class HistoryController {
         p.ext
       ); // toto_[0-9]...
 
-      console.log('[isOriginal]', isOriginal);
       if (isOriginal) {
         // if already some files exists, don't save an original version (cause: the really original version is lost) !
         // (Often the case...)

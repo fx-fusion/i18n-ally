@@ -405,86 +405,86 @@
       },
       {
         "command": "i18n-ally-treeLocalHistory.refresh",
-        "title": "Refresh",
+        "title": "刷新",
         "when": false,
         "icon": "$(refresh)"
       },
       {
         "command": "i18n-ally-treeLocalHistory.more",
-        "title": "See more history",
+        "title": "查看更多历史版本",
         "when": false,
         "icon": "$(zoom-in)"
       },
       {
         "command": "i18n-ally-treeLocalHistory.deleteAll",
-        "title": "Delete history",
+        "title": "删除历史版本",
         "when": false,
         "icon": "$(trash)"
       },
       {
         "command": "i18n-ally-treeLocalHistory.forCurrentFile",
-        "title": "Current file",
+        "title": "当前",
         "when": false
       },
       {
         "command": "i18n-ally-treeLocalHistory.forAll",
-        "title": "All",
+        "title": "全部",
         "when": false
       },
       {
         "command": "i18n-ally-treeLocalHistory.forSpecificFile",
-        "title": "Specific file",
+        "title": "特定",
         "when": false
       },
       {
         "command": "i18n-ally-treeLocalHistory.showSideEntry",
-        "title": "Open to the side",
+        "title": "在侧边栏打开",
         "when": false
       },
       {
         "command": "i18n-ally-treeLocalHistory.deleteEntry",
-        "title": "Delete",
+        "title": "删除",
         "when": false
       },
       {
         "command": "i18n-ally-treeLocalHistory.compareToCurrentEntry",
-        "title": "Compare with current version",
+        "title": "与当前版本相比",
         "when": false
       },
       {
         "command": "i18n-ally-treeLocalHistory.selectEntry",
-        "title": "Select for compare",
+        "title": "选择以进行比较",
         "when": false
       },
       {
         "command": "i18n-ally-treeLocalHistory.compareEntry",
-        "title": "Compare with selection",
+        "title": "与已选项目进行比较",
         "when": false
       },
       {
         "command": "i18n-ally-treeLocalHistory.restoreEntry",
-        "title": "Restore",
+        "title": "恢复",
         "when": false
       },
       {
         "command": "i18n-ally-local-history.showAll",
-        "title": "Local History: Show all"
+        "title": "显示全部"
       },
       {
         "command": "i18n-ally-local-history.showCurrent",
-        "title": "Local History: Show current version"
+        "title": "Show current version"
       },
       {
         "command": "i18n-ally-local-history.compareToCurrent",
-        "title": "Local History: Compare to current version"
+        "title": "与当前版本相比"
       },
       {
         "command": "i18n-ally-local-history.compareToActive",
-        "title": "Local History: Compare to active file"
+        "title": "与活动文件相比"
       },
       {
         "command": "i18n-ally-local-history.compareToPrevious",
-        "title": "Local History: Compare to previous"
+        "title": "与之前版本相比"
       }
     ],
     "menus": {
@@ -720,11 +720,6 @@
           "group": "compare@3"
         },
         {
-          "command": "i18n-ally-treeLocalHistory.restoreEntry",
-          "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
-          "group": "navigation@3"
-        },
-        {
           "command": "i18n-ally-treeLocalHistory.deleteEntry",
           "when": "view == i18n-ally-local-history && viewItem == localHistoryItem",
           "group": "navigation@4"
@@ -747,32 +742,32 @@
           "when": "view =~ /i18n-ally-locales-tree/"
         },
         {
-          "command": "i18n-ally-treeLocalHistory.refresh",
+          "command": "i18n-ally-treeLocalHistory.forCurrentFile",
           "group": "navigation@1",
           "when": "view == i18n-ally-local-history"
         },
         {
-          "command": "i18n-ally-treeLocalHistory.more",
+          "command": "i18n-ally-treeLocalHistory.forAll",
           "group": "navigation@2",
           "when": "view == i18n-ally-local-history"
         },
         {
-          "command": "i18n-ally-treeLocalHistory.deleteAll",
+          "command": "i18n-ally-treeLocalHistory.forSpecificFile",
           "group": "navigation@3",
           "when": "view == i18n-ally-local-history"
         },
         {
-          "command": "i18n-ally-treeLocalHistory.forCurrentFile",
+          "command": "i18n-ally-treeLocalHistory.more",
           "group": "navigation@4",
           "when": "view == i18n-ally-local-history"
         },
         {
-          "command": "i18n-ally-treeLocalHistory.forAll",
+          "command": "i18n-ally-treeLocalHistory.deleteAll",
           "group": "navigation@5",
           "when": "view == i18n-ally-local-history"
         },
         {
-          "command": "i18n-ally-treeLocalHistory.forSpecificFile",
+          "command": "i18n-ally-treeLocalHistory.refresh",
           "group": "navigation@6",
           "when": "view == i18n-ally-local-history"
         }

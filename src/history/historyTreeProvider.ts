@@ -55,7 +55,6 @@ export default class HistoryTreeProvider
   }
 
   getSettingsItem(): HistoryItem {
-    console.log('[this.contentKind]', this.contentKind);
     // Node only for settings...
     switch (this.contentKind) {
       case EHistoryTreeContentKind.All:
@@ -167,7 +166,6 @@ export default class HistoryTreeProvider
     fileName: vscode.Uri,
     settings: IHistorySettings
   ): Promise<Object> {
-    console.log('[this.contentKind]', this.contentKind);
     return new Promise((resolve, reject) => {
       let pattern;
       switch (this.contentKind) {
@@ -410,7 +408,6 @@ export default class HistoryTreeProvider
   }
 
   public showSide(element: HistoryItem): void {
-    console.log('[element.kind === EHistoryTreeItem.File]', element.kind === EHistoryTreeItem.File);
     if (element.kind === EHistoryTreeItem.File)
       vscode.commands.executeCommand(
         "vscode.open",
@@ -483,7 +480,7 @@ export default class HistoryTreeProvider
   }
 
   public restore(element: HistoryItem): void {
-    if (element.kind === EHistoryTreeItem.File) {
+    /* if (element.kind === EHistoryTreeItem.File) {
       // @ts-ignore
       this.controller
         .restore(element.file)
@@ -493,7 +490,7 @@ export default class HistoryTreeProvider
             `Restore ${element.file.fsPath} failed. Error: ${err}`
           )
         );
-    }
+    } */
   }
 
   public forCurrentFile(): void {
@@ -547,7 +544,6 @@ class HistoryItem extends vscode.TreeItem {
     // @ts-ignore
     this.grp = this.kind !== EHistoryTreeItem.None ? grp : undefined;
 
-    console.log('[this.kind,this.file,this.grp]', this.kind,this.file,this.grp);
     switch (this.kind) {
       case EHistoryTreeItem.File:
         this.contextValue = "localHistoryItem";
@@ -568,7 +564,6 @@ class HistoryItem extends vscode.TreeItem {
 
     // TODO: if current === file
 
-    console.log('[provider.contentKind === EHistoryTreeContentKind.Current]', provider.contentKind === EHistoryTreeContentKind.Current);
     if (provider.contentKind === EHistoryTreeContentKind.Current) {
       this.command =
         this.kind === EHistoryTreeItem.File
@@ -588,6 +583,5 @@ class HistoryItem extends vscode.TreeItem {
             }
           : undefined;
     }
-    console.log('[this.command]', this.command);
   }
 }

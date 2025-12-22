@@ -8,5 +8,4 @@
   if (typeof r === 'function') r = r()
   var result = await Promise.resolve(r)
   process.stdout.write = stdout
-  console.log(JSON.stringify(result))
 })()

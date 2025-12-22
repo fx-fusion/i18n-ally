@@ -54,7 +54,6 @@ export class HistorySettings {
 
   public static getTreeLocation(): EHistoryTreeLocation {
     let config = vscode.workspace.getConfiguration("i18n-ally.local-history");
-    console.log('[config-222]', config);
     return <EHistoryTreeLocation>config.get("treeLocation");
   }
 
@@ -126,7 +125,6 @@ export class HistorySettings {
       absolute,
       message = "";
 
-      console.log('[config]', config);
 
     if (typeof enabled === "boolean")
       message += "i18n-ally.local-history.enabled must be a number, ";
@@ -146,7 +144,6 @@ export class HistorySettings {
             );
         });
 
-        console.log('[enabled !== EHistoryEnabled.Never]', enabled !== EHistoryEnabled.Never);
     if (enabled !== EHistoryEnabled.Never) {
       historyPath = <string>config.get("path");
       if (historyPath) {

@@ -112,11 +112,11 @@ export function historyProviderActivate(context: vscode.ExtensionContext) {
     treeProvider.compare,
     treeProvider
   );
-  vscode.commands.registerCommand(
-    "i18n-ally-treeLocalHistory.restoreEntry",
-    treeProvider.restore,
-    treeProvider
-  );
+  // vscode.commands.registerCommand(
+  //   "i18n-ally-treeLocalHistory.restoreEntry",
+  //   treeProvider.restore,
+  //   treeProvider
+  // );
 
   // Create first history before save document
   // vscode.workspace.onWillSaveTextDocument(e =>
@@ -133,9 +133,9 @@ export function historyProviderActivate(context: vscode.ExtensionContext) {
   //   });
   // });
 
-  vscode.window.onDidChangeActiveTextEditor(e =>
-    treeProvider.changeActiveFile()
-  );
+  // vscode.window.onDidChangeActiveTextEditor(e =>
+  //   treeProvider.changeActiveFile()
+  // );
 
   vscode.workspace.onDidChangeConfiguration(configChangedEvent => {
     if (

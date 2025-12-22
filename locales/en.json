@@ -110,6 +110,7 @@
   "editor.title": "i18n Ally Editor",
   "editor.translate": "Translate",
   "editor.translate_all_missing": "Translate All Missing",
+  "editor.translate_all": "Translate All",
   "errors.keystyle_not_set": "Keystyle is not specified, operation cancelled.",
   "errors.translating_empty_source_value": "Source translation of \"{0}\" is not found. Translation aborted.",
   "errors.translating_same_locale": "Translate to same locale is not allowed.",

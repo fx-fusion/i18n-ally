@@ -64,7 +64,7 @@ export class Config {
   }
 
   static set displayLanguage(value) {
-    this.setConfig('displayLanguage', value, true)
+    this.setConfig('displayLanguage', value)
   }
 
   static get sourceLanguage(): string {
