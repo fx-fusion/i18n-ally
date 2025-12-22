@@ -7,46 +7,45 @@ import HistoryTreeProvider from "./historyTreeProvider";
  * Activate the extension.
  */
 export function historyProviderActivate(context: vscode.ExtensionContext) {
-  const controller = new HistoryController();
-
+  const historyController = new HistoryController();
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand(
       "i18n-ally-local-history.showAll",
-      controller.showAll,
-      controller
+      historyController.showAll,
+      historyController
     )
   );
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand(
       "i18n-ally-local-history.showCurrent",
-      controller.showCurrent,
-      controller
+      historyController.showCurrent,
+      historyController
     )
   );
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand(
       "i18n-ally-local-history.compareToActive",
-      controller.compareToActive,
-      controller
+      historyController.compareToActive,
+      historyController
     )
   );
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand(
       "i18n-ally-local-history.compareToCurrent",
-      controller.compareToCurrent,
-      controller
+      historyController.compareToCurrent,
+      historyController
     )
   );
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand(
       "i18n-ally-local-history.compareToPrevious",
-      controller.compareToPrevious,
-      controller
+      historyController.compareToPrevious,
+      historyController
     )
   );
 
   // Tree
-  const treeProvider = new HistoryTreeProvider(controller);
+  const treeProvider = new HistoryTreeProvider(historyController);
   // vscode.window.registerTreeDataProvider('i18n-ally-treeLocalHistory', treeProvider);
   // vscode.window.registerTreeDataProvider('i18n-ally-treeLocalHistoryExplorer', treeProvider);
 
@@ -147,7 +146,7 @@ export function historyProviderActivate(context: vscode.ExtensionContext) {
     } else if (
       configChangedEvent.affectsConfiguration("i18n-ally.local-history")
     ) {
-      controller.clearSettings();
+      historyController.clearSettings();
       treeProvider.refresh();
     }
   });

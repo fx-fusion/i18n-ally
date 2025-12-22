@@ -8,7 +8,7 @@ import {
   LocalesTreeProvider
 } from "./providers";
 import { UsageReportProvider } from "./providers/UsageReportProvider";
-import { historyProviderActivate } from "../history/historyExtension";
+// import { historyProviderActivate } from "../history/historyExtension";
 
 export * from "./items";
 export * from "./providers";
@@ -52,12 +52,12 @@ const m: ExtensionModule = ctx => {
     treeDataProvider: new HelpFeedbackProvider(ctx)
   });
 
-  const historyProvider = historyProviderActivate(ctx);
+  // const historyProvider = historyProviderActivate(ctx);
 
-  window.createTreeView(ViewIds.history, {
-    treeDataProvider: historyProvider,
-    showCollapseAll: true
-  });
+  // window.createTreeView(ViewIds.history, {
+  //   treeDataProvider: historyProvider,
+  //   showCollapseAll: true
+  // });
 
   return [];
 };

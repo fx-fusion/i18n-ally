@@ -55,6 +55,8 @@
     "glob-gitignore": "^1.0.14",
     "htmlparser2": "^6.1.0",
     "iconv-lite": "^0.6.3",
+    "https-proxy-agent": "^5.0.1",
+    "socks-proxy-agent": "^6.1.1",
     "ini": "^2.0.0",
     "js-yaml": "^4.1.0",
     "json-source-map": "^0.6.1",
@@ -434,6 +436,11 @@
       {
         "command": "i18n-ally-treeLocalHistory.forSpecificFile",
         "title": "特定",
+        "when": false
+      },
+      {
+        "command": "i18n-ally-treeLocalHistory.showEntry",
+        "title": "打开历史版本",
         "when": false
       },
       {
@@ -1308,6 +1315,11 @@
             "gpt-4-32k-0613"
           ],
           "description": "%config.openai_api_model%"
+        },
+        "i18n-ally.translate.proxy.host": {
+          "type": "string",
+          "default": "",
+          "description": "代理服务器地址"
         },
         "i18n-ally.usage.scanningIgnore": {
           "type": "array",

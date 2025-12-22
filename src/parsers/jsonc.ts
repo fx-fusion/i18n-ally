@@ -22,6 +22,9 @@ export class JsoncParser extends Parser {
   }
 
   async save(filepath: string, object: object, sort: boolean, compare: ((x: string, y: string) => number) | undefined, pendings: PendingWrite[] = []) {
+    // 将修改保存到历史记录中
+    await this.saveToHistory(filepath, pendings);
+
     let text = File.readSync(filepath)
     const updates: { path: (string | number)[]; value: any }[] = []
     for (const pending of pendings) {
@@ -32,7 +35,7 @@ export class JsoncParser extends Parser {
       })
       text = JSONC.applyEdits(text, JSONC.modify(text, keypath.split('.'), value, {}))
     }
-    await File.write(filepath, text)
+    await File.writeSync(filepath, text)
   }
 
   async dump(object: object) {

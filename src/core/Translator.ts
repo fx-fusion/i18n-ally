@@ -96,6 +96,8 @@ export class Translator {
       return
     }
 
+    /*
+    // translate all
     if (jobs.length > 1) {
       const Yes = i18n.t('prompt.button_yes')
       const result = await window.showWarningMessage(
@@ -106,6 +108,7 @@ export class Translator {
       if (result !== Yes)
         return
     }
+    */
 
     window.withProgress({
       location: ProgressLocation.Notification,
