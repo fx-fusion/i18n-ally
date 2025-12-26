@@ -878,12 +878,6 @@
           "name": "%view.help_feedback%",
           "when": "i18n-ally-enabled",
           "icon": "./res/logo.svg"
-        },
-        {
-          "id": "i18n-ally-local-history",
-          "name": "%view.local_history%",
-          "when": "i18n-ally-enabled",
-          "icon": "./res/logo.svg"
         }
       ]
     },

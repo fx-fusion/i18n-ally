@@ -4,7 +4,6 @@ import { LocaleTreeItem, ProgressSubmenuItem } from '~/views';
 import { Translator, CurrentFile, Config, Global, LocaleNode, AccaptableTranslateItem } from '~/core';
 import i18n from '~/i18n';
 import { Telemetry, TelemetryKey } from '~/core/Telemetry';
-import { log } from 'console';
 
 export async function promptForSourceLocale(defaultLocale: string, node?: LocaleNode) {
   const locales = Global.allLocales;
@@ -27,7 +26,7 @@ export async function promptForSourceLocale(defaultLocale: string, node?: Locale
 
 export async function TranslateKeys(item?: LocaleTreeItem | ProgressSubmenuItem | CommandOptions) {
   let source: string | undefined;
-  console.log('[TranslateKeys-item]', item);
+  // console.log('[TranslateKeys-item]', item);
 
   if (item && !(item instanceof LocaleTreeItem) && !(item instanceof ProgressSubmenuItem) && item.from) {
     source = item.from;
@@ -39,9 +38,7 @@ export async function TranslateKeys(item?: LocaleTreeItem | ProgressSubmenuItem 
 
     if (source == null) return;
   }
-  console.log('[111]',TelemetryKey.TranslateKey);
   Telemetry.track(TelemetryKey.TranslateKey, { actionSource: Telemetry.getActionSource(item) });
-  console.log('[2222]');
 
   let nodes: AccaptableTranslateItem[] = [];
   let targetLocales: string[] | undefined;
