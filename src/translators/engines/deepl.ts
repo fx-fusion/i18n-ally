@@ -19,33 +19,6 @@ interface DeepLTranslateRes {
   translations: DeepLTranslate[]
 }
 
-const deepl = axios.create({})
-
-deepl.interceptors.request.use((req) => {
-  req.baseURL = Config.deeplUseFreeApiEntry
-    ? 'https://api-free.deepl.com/v2'
-    : 'https://api.deepl.com/v2'
-
-  req.params = {
-    auth_key: Config.deeplApiKey,
-  }
-
-  if (req.method === 'POST' || req.method === 'post') {
-    req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    req.data = qs.stringify(req.data)
-  }
-
-  log(true, req)
-
-  return req
-})
-
-deepl.interceptors.response.use((res) => {
-  log(true, res)
-
-  return res
-})
-
 function log(inspector: boolean, ...args: any[]): void {
   if (Config.deeplLog) {
     // eslint-disable-next-line no-console
@@ -55,14 +28,8 @@ function log(inspector: boolean, ...args: any[]): void {
 }
 
 async function usage(): Promise<DeepLUsage> {
-  try {
-    return await deepl.get('/usage').then(({ data }) => data)
-  }
-  catch (err) {
-    log(false, err)
-
-    throw err
-  }
+  const engine = new DeepL()
+  return await engine.usage()
 }
 
 function stripeLocaleCode(locale?: string): string | undefined {
@@ -75,9 +42,42 @@ function stripeLocaleCode(locale?: string): string | undefined {
 }
 
 class DeepL extends TranslateEngine {
+  private instance = axios.create({
+    timeout: 20000,
+  })
+
+  constructor() {
+    super()
+
+    this.instance.interceptors.request.use((req) => {
+      req.baseURL = Config.deeplUseFreeApiEntry
+        ? 'https://api-free.deepl.com/v2'
+        : 'https://api.deepl.com/v2'
+
+      req.params = {
+        auth_key: Config.deeplApiKey,
+      }
+
+      if (req.method === 'POST' || req.method === 'post') {
+        req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        req.data = qs.stringify(req.data)
+      }
+
+      log(true, req)
+
+      return req
+    })
+
+    this.instance.interceptors.response.use((res) => {
+      log(true, res)
+
+      return res
+    })
+  }
+
   async translate(options: TranslateOptions) {
     try {
-      const res: DeepLTranslateRes = await deepl({
+      const res: DeepLTranslateRes = await this.instance({
         method: 'POST',
         url: '/translate',
         data: {
@@ -94,6 +94,10 @@ class DeepL extends TranslateEngine {
 
       throw err
     }
+  }
+
+  async usage() {
+    return await this.instance.get('/usage').then(({ data }) => data)
   }
 
   transform(res: DeepLTranslate[], options: TranslateOptions): TranslateResult {

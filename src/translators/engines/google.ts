@@ -20,15 +20,14 @@ export default class GoogleTranslate extends TranslateEngine {
       from: from === 'auto' || !from ? '' : `&source=${from}`,
       to: to === 'auto' || !to ? '' : `&target=${to}`,
     };
-    const proxyUrl =
-      Config.proxyHost ||
-      process.env.ALL_PROXY ||
-      process.env.all_proxy ||
-      process.env.HTTPS_PROXY ||
-      process.env.HTTP_PROXY ||
-      process.env.https_proxy ||
-      process.env.http_proxy ||
-      '';
+    const proxyUrl = Config.proxyHost
+      ?? process.env.ALL_PROXY
+      ?? process.env.all_proxy
+      ?? process.env.HTTPS_PROXY
+      ?? process.env.HTTP_PROXY
+      ?? process.env.https_proxy
+      ?? process.env.http_proxy
+      ?? '';
 
     const requestConfig: any = {
       method: 'GET',
@@ -41,6 +40,7 @@ export default class GoogleTranslate extends TranslateEngine {
           }/translate_a/single?client=gtx&sl=${from}&tl=${to}&hl=zh-CN&dt=t&dt=bd&ie=UTF-8&oe=UTF-8&dj=1&source=icon&q=${encodeURI(
             options.text,
           )}`,
+      timeout: this.config.timeout || 3000,
     };
 
     if (proxyUrl) {

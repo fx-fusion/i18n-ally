@@ -37,6 +37,7 @@ export default class OpenAITranslate extends TranslateEngine {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
         },
+        timeout: this.config.timeout || 5000,
       }
     );
 

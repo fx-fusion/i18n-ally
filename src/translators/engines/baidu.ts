@@ -38,6 +38,7 @@ export default class BaiduTranslate extends TranslateEngine {
     const { data } = await axios({
       method: 'GET',
       url: `${this.apiRoot}/api/trans/vip/translate?${qs.stringify(form)}`,
+      timeout: this.config.timeout || 5000,
     })
 
     return this.transform(data, options)

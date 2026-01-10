@@ -34,6 +34,7 @@
         span "{{data.keypath}}"
         v-pencil.setting-button.small(@click='renameKey')
         v-content-copy.setting-button.small(@click='copyKey')
+        v-restart.setting-button.small(@click='editKey')
 
       // pre {{$store.state.context}} {{keyIndex}}
 
@@ -72,12 +73,14 @@ import Flag from './Flag.vue'
 import RecordEditor from './RecordEditor.vue'
 import { vscode } from './api'
 import VContentCopy from 'vue-material-design-icons/ContentCopy.vue'
+import VRestart from 'vue-material-design-icons/Restart.vue'
 
 export default Vue.extend({
   components: {
     Flag,
     RecordEditor,
     VContentCopy,
+    VRestart,
   },
 
   inheritAttrs: false,
@@ -175,6 +178,14 @@ export default Vue.extend({
       vscode.postMessage({
         type: 'copy-key',
         keypath: this.data.keypath,
+      })
+    },
+    editKey() {
+      vscode.postMessage({
+        type: 'open-in-editor',
+        keypath: this.data.keypath,
+        locale: this.current,
+        data: { keyIndex: this.keyIndex },
       })
     },
     translateAll() {

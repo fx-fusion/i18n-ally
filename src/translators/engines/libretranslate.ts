@@ -24,6 +24,7 @@ export default class LibreTranslate extends TranslateEngine {
       headers: {
         'Content-Type': 'application/json',
       },
+      timeout: this.config.timeout || 5000,
     },
     )
 

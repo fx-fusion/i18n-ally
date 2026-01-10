@@ -152,8 +152,20 @@ export class Protocol {
         commands.executeCommand('workbench.extensions.action.configure', EXT_ID)
         break
 
+      case 'reload-window':
+        commands.executeCommand('workbench.action.reloadWindow')
+        break
+
       case 'open-search':
         commands.executeCommand(Commands.open_editor)
+        break
+
+      case 'open-in-editor':
+        commands.executeCommand(Commands.open_in_editor, {
+          keypath: message.keypath,
+          locale: message.locale,
+          keyIndex: message.data?.keyIndex,
+        })
         break
 
       case 'translation.apply':
