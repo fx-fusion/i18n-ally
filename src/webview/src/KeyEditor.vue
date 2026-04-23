@@ -142,7 +142,7 @@ export default Vue.extend({
     'context': {
       immiediate: true,
       handler() {
-        this.keyIndex = this.data.keyIndex ?? this.contextKeys.indexOf(this.data.keypath) ?? 0
+        this.keyIndex = this.data.keyIndex ?? this.contextKeys.findIndex(e=>e.key===this.data.keypath) ?? 0
       },
     },
     keyIndex() {
@@ -181,6 +181,7 @@ export default Vue.extend({
       })
     },
     editKey() {
+      this.keyIndex = this.contextKeys.findIndex(e=>e.key===this.data.keypath) ?? 0;
       vscode.postMessage({
         type: 'open-in-editor',
         keypath: this.data.keypath,
@@ -222,7 +223,7 @@ export default Vue.extend({
         this.sidebarWidth = Math.min(Math.max(50, e.clientX - 20), window.innerWidth * 0.6)
     },
     preStr(v) {
-      return v.replace(/\./g, '<wbr>.<wbr>')
+      return v?.replace?.(/\./g, '<wbr>.<wbr>')
     }
   },
 })
@@ -278,7 +279,7 @@ export default Vue.extend({
           cursor default
 
         &.active::before
-          opacity 0.1
+          opacity 0.5
 
         &::after
           opacity 0 !important
