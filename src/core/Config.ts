@@ -451,6 +451,19 @@ export class Config {
     return this.getConfig<string>('extract.keyPrefix') ?? '';
   }
 
+  static get keygenIsAcronym() {
+    return this.getConfig<number>('extract.keygenIsAcronym') ?? true;
+  }
+
+  static extractLastKey: string = '';
+
+  static get extractFillLastKey() {
+    return this.getConfig<boolean>('extract.extractFillLastKey') ?? true;
+  }
+  static get extractPathSeparator() {
+    return this.getConfig<string>('extract.extractPathSeparator') ?? '.';
+  }
+
   static get extractKeyMaxLength() {
     return this.getConfig<number>('extract.keyMaxLength') ?? Infinity;
   }

@@ -1,107 +1,119 @@
-import { basename, extname } from 'path'
-import { TextDocument, window } from 'vscode'
-import { nanoid } from 'nanoid'
-import limax from 'limax'
-import { Config, Global } from '../extension'
-import { ExtractInfo } from './types'
-import { CurrentFile } from './CurrentFile'
-import { changeCase } from '~/utils/changeCase'
+import { basename, extname } from 'path';
+import { TextDocument, window } from 'vscode';
+import { nanoid } from 'nanoid';
+import limax from 'limax';
+import { Config, Global } from '../extension';
+import { ExtractInfo } from './types';
+import { CurrentFile } from './CurrentFile';
+import { changeCase } from '~/utils/changeCase';
 
-export function generateKeyFromText(text: string, filepath?: string, reuseExisting = false, usedKeys: string[] = []): string {
-  let key: string | undefined
+export function generateKeyFromText(
+  text: string,
+  filepath?: string,
+  reuseExisting = false,
+  usedKeys: string[] = [],
+): string {
+  let key: string | undefined;
 
   // already existed, reuse the key
   // mostly for auto extraction
   if (reuseExisting) {
-    key = Global.loader.searchKeyForTranslations(text)
-    if (key)
-      return key
+    key = Global.loader.searchKeyForTranslations(text);
+    if (key) return key;
   }
 
   // keygent
-  const keygenStrategy = Config.keygenStrategy
+  const keygenStrategy = Config.keygenStrategy;
   if (keygenStrategy === 'random') {
-    key = nanoid()
-  }
-  else if (keygenStrategy === 'empty') {
-    key = ''
-  }
-  else if (keygenStrategy === 'source') {
-    key = text
-  }
-  else {
-    text = text.replace(/\$/g, '')
-    key = limax(text, { separator: Config.preferredDelimiter, tone: false })
-      .slice(0, Config.extractKeyMaxLength ?? Infinity)
+    key = nanoid();
+  } else if (keygenStrategy === 'empty') {
+    key = '';
+  } else if (keygenStrategy === 'source') {
+    key = text;
+  } else {
+    text = text.replace(/\$/g, '');
+    key = limax(text, { separator: Config.preferredDelimiter, tone: false }).slice(
+      0,
+      Config.extractKeyMaxLength ?? Infinity,
+    );
+    // 首字母
+    if (Config.keygenIsAcronym) {
+      let _key = '';
+      key.split(Config.preferredDelimiter).forEach((part) => {
+        if (part) _key += part[0];
+      });
+      key = _key || key;
+    }
   }
 
-  const keyPrefix = Config.keyPrefix
-  if (keyPrefix && keygenStrategy !== 'empty' && keygenStrategy !== 'source')
-    key = keyPrefix + key
+  const keyPrefix = Config.keyPrefix;
+  if (keyPrefix && keygenStrategy !== 'empty' && keygenStrategy !== 'source') key = keyPrefix + key;
 
   if (filepath && key.includes('fileName')) {
     key = key
       .replace('{fileName}', basename(filepath))
-      .replace('{fileNameWithoutExt}', basename(filepath, extname(filepath)))
+      .replace('{fileNameWithoutExt}', basename(filepath, extname(filepath)));
   }
 
-  key = changeCase(key, Config.keygenStyle).trim()
+  key = changeCase(key, Config.keygenStyle).trim();
 
   // some symbol can't convert to alphabet correctly, apply a default key to it
-  if (!key)
-    key = 'key'
+  if (!key) key = 'key';
 
   // suffix with a auto increment number if same key
   if (usedKeys.includes(key) || CurrentFile.loader.getNodeByKey(key)) {
-    const originalKey = key
-    let num = 0
+    const originalKey = key;
+    let num = 0;
 
     do {
-      key = `${originalKey}${Config.preferredDelimiter}${num}`
-      num += 1
-    } while (
-      usedKeys.includes(key) || CurrentFile.loader.getNodeByKey(key, false)
-    )
+      key = `${originalKey}${Config.preferredDelimiter}${num}`;
+      num += 1;
+    } while (usedKeys.includes(key) || CurrentFile.loader.getNodeByKey(key, false));
   }
 
-  return key
+  // 使用上次完成的键，替换掉最后一级
+  if (Config.extractLastKey && Config.extractFillLastKey) {
+    try {
+      let s = Config.extractLastKey?.split?.(Config.extractPathSeparator)?.slice?.(0, -1) || [];
+      s.push(key);
+      s = s.filter((i) => i);
+      key = s.join(Config.extractPathSeparator);
+    } catch (error) {}
+  }
+
+  return key;
 }
 
 export async function extractHardStrings(document: TextDocument, extracts: ExtractInfo[], saveFile = false) {
-  if (!extracts.length)
-    return
+  if (!extracts.length) return;
 
-  const editor = await window.showTextDocument(document)
-  const filepath = document.uri.fsPath
-  const sourceLanguage = Config.sourceLanguage
+  const editor = await window.showTextDocument(document);
+  const filepath = document.uri.fsPath;
+  const sourceLanguage = Config.sourceLanguage;
 
-  extracts.sort((a, b) => b.range.start.compareTo(a.range.start))
+  extracts.sort((a, b) => b.range.start.compareTo(a.range.start));
 
   // replace
   await editor.edit((editBuilder) => {
     for (const extract of extracts) {
-      editBuilder.replace(
-        extract.range,
-        extract.replaceTo,
-      )
+      editBuilder.replace(extract.range, extract.replaceTo);
     }
-  })
+  });
 
   // save keys
   await CurrentFile.loader.write(
     extracts
-      .filter(i => i.keypath != null && i.message != null)
-      .map(e => ({
+      .filter((i) => i.keypath != null && i.message != null)
+      .map((e) => ({
         textFromPath: filepath,
         filepath: undefined,
         keypath: e.keypath!,
         value: e.message!,
         locale: e.locale || sourceLanguage,
       })),
-  )
+  );
 
-  if (saveFile)
-    await document.save()
+  if (saveFile) await document.save();
 
-  CurrentFile.invalidate()
+  CurrentFile.invalidate();
 }

@@ -61,7 +61,9 @@ async function ExtractOrInsertCommnad(options?: ExtractTextOptions, detection?: 
   const { text, rawText, range, args, document, isInsert } = options
   const filepath = document.uri.fsPath
 
-  const default_keypath = generateKeyFromText(rawText || text, filepath)
+  const default_keypath = generateKeyFromText(rawText || text, filepath);
+
+
 
   const existingItems: QuickPickItemWithKey[]
     = isInsert
@@ -147,13 +149,13 @@ async function ExtractOrInsertCommnad(options?: ExtractTextOptions, detection?: 
       if (shouldOverride === 'canceled')
         return
     }
-
     const replacer = await promptTemplates(keypath, args, document, detection)
 
     if (!replacer) {
       window.showWarningMessage(i18n.t('prompt.extraction_canceled'))
       return
     }
+    Config.extractLastKey = keypath
 
     await extractHardStrings(document, [{
       range,
