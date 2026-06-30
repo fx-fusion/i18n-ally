@@ -84,12 +84,16 @@ export class LocaleTreeItem extends BaseTreeItem {
       if (this.node.type !== 'tree') values.push('open-in-editor');
     }
 
+    // allow translating all children when this is a tree with children
     if (values.indexOf('translatable') === -1) {
+      // tree nodes are usually not translatable, but if they have children
+      // we treat them as a candidate to "translate all child nodes"
       // @ts-ignore
-      if (!this.node?.children) values.push('translatable');
-      // @ts-ignore
-      // else if (this.node?.children.length)
-      // values.push('translatable');
+      if (this.node?.type === 'tree' && Object.keys((this.node as any).children || {}).length) {
+        values.push('translatable')
+      }
+      // fallback: single leaf nodes without children should still be translatable
+      else if (this.node?.type !== 'tree') values.push('translatable');
     }
 
     return values.join('-');

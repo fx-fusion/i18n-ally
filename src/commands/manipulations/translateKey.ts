@@ -50,11 +50,40 @@ export async function TranslateKeys(item?: LocaleTreeItem | ProgressSubmenuItem 
       .map((key) => CurrentFile.loader.getRecordByKey(key, to, true)!)
       .filter((i) => i);
   } else {
-    if (item instanceof LocaleTreeItem) targetLocales = item.listedLocales;
-    else targetLocales = item?.locales;
+    if (item instanceof LocaleTreeItem) {
+      targetLocales = item.listedLocales;
 
-    const node = getNodeOrRecord(item);
-    if (node) nodes.push(node);
+      // if it's a tree node, collect all descendant leaf nodes for translation
+      // @ts-ignore
+      if (item.node && item.node.type === 'tree') {
+        const collect = (n: any): AccaptableTranslateItem[] => {
+          const r: AccaptableTranslateItem[] = []
+          if (!n) return r
+          if (n.type === 'node') {
+            r.push(n)
+            return r
+          }
+          if (n.type === 'tree') {
+            for (const child of Object.values(n.children || {})) {
+              r.push(...collect(child))
+            }
+          }
+          return r
+        }
+
+        nodes = collect(item.node)
+      }
+      else {
+        targetLocales = item.listedLocales;
+        const node = getNodeOrRecord(item);
+        if (node) nodes.push(node);
+      }
+    } else {
+      targetLocales = item?.locales;
+
+      const node = getNodeOrRecord(item);
+      if (node) nodes.push(node);
+    }
   }
 
   // @ts-ignore
